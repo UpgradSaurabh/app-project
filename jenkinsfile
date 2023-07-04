@@ -2,16 +2,16 @@ pipeline {
   agent {
     label 'worker'
   }
-   
+
   stages {
     stage('Git Checkout') {
       steps {
         checkout([$class: 'GitSCM',
                   branches: [[name: '*/main']],
-                  userRemoteConfigs: [[url: 'https://github.com/saurabhgcoder/saurabh-c42']]])
+                  userRemoteConfigs: [[url: 'https://github.com/UpgradSaurabh/app-project.git']]])
       }
     }
-    
+
      stage('Stopping the container') {
       steps {
         script {
@@ -21,12 +21,12 @@ pipeline {
     }
     stage('Build Docker Image') {
       steps {
-        script {     
+        script {
           sh '''
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 139894979471.dkr.ecr.us-east-1.amazonaws.com
-          docker build -t upgrad-node-app:${BUILD_NUMBER} .
-          docker tag upgrad-node-app:${BUILD_NUMBER} 139894979471.dkr.ecr.us-east-1.amazonaws.com/upgrad-node-app:${BUILD_NUMBER}
-          docker push 139894979471.dkr.ecr.us-east-1.amazonaws.com/upgrad-node-app:${BUILD_NUMBER}
+	  aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 574739331135.dkr.ecr.us-east-1.amazonaws.com
+	  docker build -t upgrad-saurabh:${BUILD_NUMBER} .
+	  docker tag upgrad-saurabh:${BUILD_NUMBER} 574739331135.dkr.ecr.us-east-1.amazonaws.com/upgrad-saurabh:${BUILD_NUMBER}
+	  docker push 574739331135.dkr.ecr.us-east-1.amazonaws.com/upgrad-saurabh:${BUILD_NUMBER}
           '''
         }
       }
@@ -35,8 +35,8 @@ pipeline {
     stage('Cleanup the docker image') {
       steps {
         script {
-          sh 'docker rmi 139894979471.dkr.ecr.us-east-1.amazonaws.com/upgrad-node-app:${BUILD_NUMBER}'
-          sh 'docker rmi upgrad-node-app:${BUILD_NUMBER}'
+          sh 'docker rmi 574739331135.dkr.ecr.us-east-1.amazonaws.com/upgrad-saurabh:${BUILD_NUMBER}'
+          sh 'docker rmi upgrad-saurabh:${BUILD_NUMBER}'
         }
       }
     }
@@ -45,9 +45,9 @@ pipeline {
       steps {
         script {
           sh '''
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 139894979471.dkr.ecr.us-east-1.amazonaws.com
-          docker pull 139894979471.dkr.ecr.us-east-1.amazonaws.com/upgrad-node-app:${BUILD_NUMBER}
-          docker run -d -p 8080:8081 139894979471.dkr.ecr.us-east-1.amazonaws.com/upgrad-node-app:${BUILD_NUMBER}
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 574739331135.dkr.ecr.us-east-1.amazonaws.com
+          docker pull 574739331135.dkr.ecr.us-east-1.amazonaws.com/upgrad-saurabh:${BUILD_NUMBER}
+          docker run -d -p 8080:8081 574739331135.dkr.ecr.us-east-1.amazonaws.com/upgrad-saurabh:${BUILD_NUMBER}
           '''
         }
       }
